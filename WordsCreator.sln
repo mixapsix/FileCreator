@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordsCreator", "WordsCreator.csproj", "{FCBE119C-279F-4940-9142-2EE1D5F1FD86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCreator", "FileCreator.csproj", "{FCBE119C-279F-4940-9142-2EE1D5F1FD86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

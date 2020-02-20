@@ -14,46 +14,46 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Forms = System.Windows.Forms;
 
-namespace WordsCreator
+namespace FileCreator
 {
 
     public partial class MainWindow : Window
     {
-        Creator creator = new Creator();       
+        private readonly Creator _creator = new Creator();
+        private readonly List<string> fileTypes = new List<string> { "WORD", "BAT", "CMD", "SH" };
         public MainWindow()
         {
             InitializeComponent();
+            fileTypeBox.ItemsSource = fileTypes;
         }
 
         private void DirectroryButton_Click(object sender, RoutedEventArgs e)
         {
-            Forms.FolderBrowserDialog openDirectoryDialog = new Forms.FolderBrowserDialog();
-            openDirectoryDialog.ShowDialog();
-            DirectoryBox.Text = openDirectoryDialog.SelectedPath;
+            using (Forms.FolderBrowserDialog openDirectoryDialog = new Forms.FolderBrowserDialog())
+            {
+                openDirectoryDialog.ShowDialog();
+                DirectoryBox.Text = openDirectoryDialog.SelectedPath;
+            }
         }
 
         private void CreateFileButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (DirectoryBox.Text != "" && FileNameBox.Text != "")
-                {
-                    int fileCounts;
-                    if (Int32.TryParse(FileCount.Text, out fileCounts))
+                if (DirectoryBox.Text == "" || FileNameBox.Text == "") return;
+
+                if (!Int32.TryParse(FileCount.Text, out int fileCounts)) return;
+
+                List<FileData> allFiles = new List<FileData>();
+                for (int x = 1; x <= fileCounts; x++)
+                    allFiles.Add(new FileData
                     {
-                        List<FileData> allFiles = new List<FileData>();
-                        for (int x = 1; x <= fileCounts; x++)
-                        {
-                            allFiles.Add(new FileData()
-                            {
-                                FileName = String.Format("\\" + FileNameBox.Text + x),
-                                FileDirectory = DirectoryBox.Text,
-                                FileContext = String.Format(FileContains.Text + "#" + x)
-                            });
-                        }
-                        Parallel.ForEach(allFiles, File => creator.CreateFile(File.FileDirectory, File.FileName, File.FileContext));
-                    }
-                }
+                        FileName = String.Format(FileNameBox.Text + x),
+                        FileDirectory = DirectoryBox.Text,
+                        FileContext = String.Format(FileContains.Text + "#" + x)
+                    });
+
+                _creator.CreateFiles(allFiles, fileTypeBox.SelectedItem.ToString(), (bool) ArchiveCheckBox.IsChecked);
             }
             catch (Exception exception)
             {
